@@ -12,15 +12,29 @@ import {
   sortableKeyboardCoordinates,
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { DraggableBlock } from "./DraggableBlock";
 import { TipTapBlock } from "./blocks";
 import { BlockMenu, BlockType } from "./BlockMenu";
 
-export const PageLayout = () => {
-  const [blocks, setBlocks] = useState<
-    Array<{ id: string; type: string; content: string }>
-  >([]);
+export interface Block {
+  id: string;
+  type: string;
+  content: string;
+  order: number;
+  pageId?: string;
+}
+
+interface PageLayoutProps {
+  initialBlocks: Block[];
+  onBlocksChange: (blocks: Block[]) => void;
+}
+
+export const PageLayout = ({
+  initialBlocks = [],
+  onBlocksChange,
+}: PageLayoutProps) => {
+  const [blocks, setBlocks] = useState<Block[]>(initialBlocks);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -29,6 +43,11 @@ export const PageLayout = () => {
     })
   );
 
+  // Notify parent of changes
+  useEffect(() => {
+    onBlocksChange(blocks);
+  }, [blocks, onBlocksChange]);
+
   const handleDragEnd = (event: any) => {
     const { active, over } = event;
 
@@ -36,26 +55,24 @@ export const PageLayout = () => {
       setBlocks((blocks) => {
         const oldIndex = blocks.findIndex((block) => block.id === active.id);
         const newIndex = blocks.findIndex((block) => block.id === over.id);
-        return arrayMove(blocks, oldIndex, newIndex);
+        const newBlocks = arrayMove(blocks, oldIndex, newIndex);
+        // Update order values
+        return newBlocks.map((block, index) => ({
+          ...block,
+          order: index,
+        }));
       });
     }
   };
 
   const handleBlockSelect = (blockType: BlockType) => {
-    setBlocks([
-      ...blocks,
-      {
-        id: `${Date.now()}`,
-        type: blockType.type,
-        content: "",
-      },
-    ]);
-  };
-
-  const updateBlock = (id: string, content: string) => {
-    setBlocks(
-      blocks.map((block) => (block.id === id ? { ...block, content } : block))
-    );
+    const newBlock: Block = {
+      id: `${Date.now()}`,
+      type: blockType.type,
+      content: "",
+      order: blocks.length,
+    };
+    setBlocks([...blocks, newBlock]);
   };
 
   return (
@@ -79,7 +96,13 @@ export const PageLayout = () => {
                 <TipTapBlock
                   type={block.type}
                   content={block.content}
-                  onChange={(content) => updateBlock(block.id, content)}
+                  onChange={(content) => {
+                    setBlocks(
+                      blocks.map((b) =>
+                        b.id === block.id ? { ...b, content } : b
+                      )
+                    );
+                  }}
                 />
               </DraggableBlock>
             ))}
