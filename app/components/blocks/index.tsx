@@ -34,7 +34,9 @@ export const TipTapBlock: React.FC<BlockProps> = ({
     ],
     content: content || "",
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      setTimeout(() => {
+        onChange(editor.getHTML());
+      }, 0);
     },
     editorProps: {
       attributes: {
@@ -52,49 +54,79 @@ export const TipTapBlock: React.FC<BlockProps> = ({
         {
           icon: "B",
           label: "Bold",
-          action: () => editor.chain().focus().toggleBold().run(),
+          action: (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            editor.chain().focus().toggleBold().run();
+          },
           isActive: () => editor.isActive("bold"),
         },
         {
           icon: "I",
           label: "Italic",
-          action: () => editor.chain().focus().toggleItalic().run(),
+          action: (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            editor.chain().focus().toggleItalic().run();
+          },
           isActive: () => editor.isActive("italic"),
         },
         {
           icon: "‾",
           label: "Underline",
-          action: () => editor.chain().focus().toggleUnderline().run(),
+          action: (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            editor.chain().focus().toggleUnderline().run();
+          },
           isActive: () => editor.isActive("underline"),
         },
         {
           icon: "~",
           label: "Strike",
-          action: () => editor.chain().focus().toggleStrike().run(),
+          action: (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            editor.chain().focus().toggleStrike().run();
+          },
           isActive: () => editor.isActive("strike"),
         },
         {
           icon: "<>",
           label: "Code",
-          action: () => editor.chain().focus().toggleCode().run(),
+          action: (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            editor.chain().focus().toggleCode().run();
+          },
           isActive: () => editor.isActive("code"),
         },
         {
           icon: "•",
           label: "Bullet List",
-          action: () => editor.chain().focus().toggleBulletList().run(),
+          action: (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            editor.chain().focus().toggleBulletList().run();
+          },
           isActive: () => editor.isActive("bulletList"),
         },
         {
           icon: "1.",
           label: "Numbered List",
-          action: () => editor.chain().focus().toggleOrderedList().run(),
+          action: (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+            editor.chain().focus().toggleOrderedList().run();
+          },
           isActive: () => editor.isActive("orderedList"),
         },
         {
           icon: "↩",
           label: "Link",
-          action: () => {
+          action: (e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
             const url = window.prompt("Enter URL");
             if (url) {
               editor.chain().focus().setLink({ href: url }).run();
@@ -109,9 +141,11 @@ export const TipTapBlock: React.FC<BlockProps> = ({
           return [
             <button
               key="h1"
-              onClick={() =>
-                editor.chain().focus().toggleHeading({ level: 1 }).run()
-              }
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                editor.chain().focus().toggleHeading({ level: 1 }).run();
+              }}
               className={`px-3 py-1.5 rounded text-sm font-medium transition-colors
                 ${
                   editor.isActive("heading", { level: 1 })
@@ -126,9 +160,11 @@ export const TipTapBlock: React.FC<BlockProps> = ({
           return [
             <button
               key="h2"
-              onClick={() =>
-                editor.chain().focus().toggleHeading({ level: 2 }).run()
-              }
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                editor.chain().focus().toggleHeading({ level: 2 }).run();
+              }}
               className={`px-3 py-1.5 rounded text-sm font-medium transition-colors
                 ${
                   editor.isActive("heading", { level: 2 })
@@ -143,7 +179,11 @@ export const TipTapBlock: React.FC<BlockProps> = ({
           return [
             <button
               key="bullet"
-              onClick={() => editor.chain().focus().toggleBulletList().run()}
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                editor.chain().focus().toggleBulletList().run();
+              }}
               className={`px-3 py-1.5 rounded text-sm font-medium transition-colors
                 ${
                   editor.isActive("bulletList")
@@ -158,7 +198,9 @@ export const TipTapBlock: React.FC<BlockProps> = ({
           return [
             <button
               key="image"
-              onClick={() => {
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
                 const url = window.prompt("Enter image URL");
                 if (url) {
                   editor.chain().focus().setImage({ src: url }).run();
@@ -190,19 +232,26 @@ export const TipTapBlock: React.FC<BlockProps> = ({
     };
 
     return (
-      <div className="flex gap-2 p-2 bg-gray-800 rounded-t-lg border-b border-gray-700">
+      <div
+        className="flex gap-2 p-2 bg-gray-800 rounded-t-lg border-b border-gray-700"
+        onClick={(e) => e.stopPropagation()}
+      >
         {getToolbarItems()}
       </div>
     );
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 w-full">
+    <div
+      className="bg-gray-800 rounded-lg shadow-lg border border-gray-700"
+      onClick={(e) => e.stopPropagation()}
+    >
       <MenuBar />
-      <div className="p-4">
+      <div className="p-4" onClick={(e) => e.stopPropagation()}>
         <EditorContent
           editor={editor}
           className="prose prose-invert max-w-none"
+          onClick={(e) => e.stopPropagation()}
         />
       </div>
     </div>

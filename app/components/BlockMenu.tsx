@@ -163,7 +163,11 @@ export const BlockMenu = ({
   return (
     <div className="relative">
       <button
-        onClick={() => setIsOpen(!isOpen)}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsOpen(!isOpen);
+        }}
         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors font-medium shadow-sm"
       >
         Add Block +
@@ -176,7 +180,9 @@ export const BlockMenu = ({
             {FEATURED_BLOCKS.map((block) => (
               <button
                 key={block.id}
-                onClick={() => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
                   onSelect(block);
                   setIsOpen(false);
                 }}
@@ -196,6 +202,7 @@ export const BlockMenu = ({
               className="w-full px-3 py-2 bg-gray-900 border border-gray-700 rounded-md text-gray-200 placeholder-gray-500 focus:outline-none focus:border-blue-500"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              onClick={(e) => e.stopPropagation()}
             />
           </div>
 
@@ -209,7 +216,9 @@ export const BlockMenu = ({
                 {blocks.map((block) => (
                   <button
                     key={block.id}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
                       onSelect(block);
                       setIsOpen(false);
                     }}

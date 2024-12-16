@@ -1,9 +1,9 @@
 import * as React from "react";
-import { ActionFunctionArgs, redirect } from "@remix-run/node";
-import { useFetcher } from "@remix-run/react";
+import { ActionFunctionArgs, json, redirect } from "@remix-run/node";
+import { Form, useFetcher } from "@remix-run/react";
 import { createPage } from "../models/page.server";
 import { PageLayout } from "../components/PageLayout";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import debounce from "lodash/debounce";
 import type { Block } from "../types/Block";
 
@@ -24,8 +24,17 @@ export async function action({ request }: ActionFunctionArgs) {
   return { success: true, page };
 }
 
+interface PageData {
+  title: string;
+  blocks: Block[];
+}
+
 export default function NewPage() {
   const fetcher = useFetcher();
+  const [pageData, setPageData] = useState<PageData>({
+    title: "",
+    blocks: [],
+  });
 
   const debouncedSave = useCallback(
     debounce((data: any) => {
@@ -37,31 +46,38 @@ export default function NewPage() {
   );
 
   return (
-    <div className="max-w-4xl mx-auto p-4">
+    <Form method="post" className="max-w-4xl mx-auto p-4">
       <div className="mb-4 flex justify-between items-center">
         <input
           type="text"
+          name="title"
           placeholder="Untitled Page"
           className="text-2xl font-bold bg-transparent text-white border-none focus:outline-none focus:ring-2 focus:ring-blue-500 rounded px-2 py-1"
           onChange={(e) => {
+            setPageData((prev) => ({ ...prev, title: e.target.value }));
+          }}
+        />
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          onClick={(e) => {
+            e.preventDefault();
             debouncedSave({
-              title: e.target.value,
-              blocks: [],
+              ...pageData,
               initialCreate: true,
             });
           }}
-        />
+        >
+          Save Page
+        </button>
       </div>
 
       <PageLayout
         initialBlocks={[]}
         onBlocksChange={(blocks: Block[]) => {
-          debouncedSave({
-            title: "Untitled Page", // You might want to manage this in state
-            blocks,
-          });
+          setPageData((prev) => ({ ...prev, blocks }));
         }}
       />
-    </div>
+    </Form>
   );
 }
