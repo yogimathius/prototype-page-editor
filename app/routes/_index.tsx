@@ -9,5 +9,5 @@ export const meta: MetaFunction = () => {
 };
 
 export default function Index() {
-  return <PageLayout />;
+  return <PageLayout initialBlocks={[]} onBlocksChange={() => {}} />;
 }
