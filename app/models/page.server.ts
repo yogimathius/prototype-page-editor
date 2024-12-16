@@ -65,3 +65,14 @@ export async function getPage(id: string) {
     },
   });
 }
+
+export async function getPages() {
+  return prisma.page.findMany({
+    include: {
+      blocks: true,
+    },
+    orderBy: {
+      updatedAt: "desc",
+    },
+  });
+}
