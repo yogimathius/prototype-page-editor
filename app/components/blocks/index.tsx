@@ -4,7 +4,8 @@ import Image from "@tiptap/extension-image";
 import Heading from "@tiptap/extension-heading";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
-import Strike from "@tiptap/extension-strike";
+import TextStyle from "@tiptap/extension-text-style";
+import Color from "@tiptap/extension-color";
 
 interface BlockProps {
   content: any;
@@ -24,15 +25,21 @@ export const TipTapBlock: React.FC<BlockProps> = ({
       Heading.configure({
         levels: [1, 2],
       }),
-      Underline,
       Link.configure({
         openOnClick: true,
       }),
-      Strike,
+      TextStyle,
+      Color,
+      Underline,
     ],
     content: content || "",
     onUpdate: ({ editor }) => {
       onChange(editor.getHTML());
+    },
+    editorProps: {
+      attributes: {
+        class: "prose prose-invert max-w-none min-h-[2rem] focus:outline-none",
+      },
     },
   });
 
@@ -190,12 +197,14 @@ export const TipTapBlock: React.FC<BlockProps> = ({
   };
 
   return (
-    <div className="bg-gray-800 rounded-lg shadow-lg border border-gray-700">
+    <div className="bg-gray-800 rounded-lg shadow-lg border border-gray-700 w-full">
       <MenuBar />
-      <EditorContent
-        editor={editor}
-        className="prose prose-invert max-w-none p-4 min-h-[100px] text-gray-200"
-      />
+      <div className="p-4">
+        <EditorContent
+          editor={editor}
+          className="prose prose-invert max-w-none"
+        />
+      </div>
     </div>
   );
 };

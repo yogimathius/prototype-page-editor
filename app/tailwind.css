@@ -3,8 +3,8 @@
 @tailwind utilities;
 
 .ProseMirror {
-  min-height: 200px;
-  padding: 1rem;
+  min-height: 1.5rem;
+  height: fit-content;
 }
 
 .ProseMirror:focus {
@@ -13,6 +13,14 @@
 
 .ProseMirror p {
   margin: 0.5em 0;
+}
+
+.ProseMirror p:first-child {
+  margin-top: 0;
+}
+
+.ProseMirror p:last-child {
+  margin-bottom: 0;
 }
 
 /* Dark theme specific styles */
@@ -28,6 +36,15 @@
   --tw-prose-hr: theme("colors.gray.700");
   --tw-prose-th-borders: theme("colors.gray.700");
   --tw-prose-td-borders: theme("colors.gray.700");
+}
+
+/* Empty block placeholder */
+.ProseMirror p.is-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
 }
 
 html,
